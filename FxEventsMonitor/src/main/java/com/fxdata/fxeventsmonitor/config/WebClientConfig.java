@@ -1,30 +1,16 @@
-package com.fxdata.fxratesmonitor.config;
+package com.fxdata.fxeventsmonitor.config;
 
-import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
-@ConfigurationProperties(prefix = "ehs")
+@ConfigurationProperties(prefix = "webclient")
 @Validated
 @Setter
-public class EhsConfiguration {
+public class WebClientConfig {
 
-    @NotBlank
-    @Getter
-    private String url;
-    @NotBlank
-    @Getter
-    private String apiToken;
-    @NotBlank
-    @Getter
-    private String fmt;
-    @Getter
-    private List<String> forexTypes;
     @NotBlank
     private String connectTimeout;
     @NotBlank
@@ -33,6 +19,7 @@ public class EhsConfiguration {
     private String readTimeout;
     @NotBlank
     private String writeTimeout;
+
 
     public Integer getConnectTimeout() {
         return convertToInteger(connectTimeout);
@@ -57,6 +44,4 @@ public class EhsConfiguration {
             throw new RuntimeException("Please configure Integer values for the ehs properties");
         }
     }
-
-
 }

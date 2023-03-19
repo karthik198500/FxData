@@ -1,9 +1,10 @@
-package com.fxdata.fxeventsmonitor.notify;
+package com.fxdata.fxratesmonitor.notify;
 
-import com.fxdata.fxeventsmonitor.config.FxEventsConfig;
-import com.fxdata.fxeventsmonitor.config.WebClientConfig;
-import com.fxdata.fxeventsmonitor.dto.NotificationDTO;
-import com.fxdata.fxeventsmonitor.httpclient.WebClientBuilder;
+
+import com.fxdata.fxratesmonitor.config.FxEventsConfig;
+import com.fxdata.fxratesmonitor.config.WebClientConfig;
+import com.fxdata.fxratesmonitor.dto.NotificationDTO;
+import com.fxdata.fxratesmonitor.httpclient.WebClientBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -29,5 +30,17 @@ public class EmailNotificationService implements NotificationService {
                 .body(Mono.just(notificationDTO), NotificationDTO.class)
                 .retrieve()
                 .bodyToMono(String.class);
+    }
+
+    @Override
+    public void sendNotificationWithBody(String body) {
+        FxEventsConfig.Notification notification = fxEventsConfig.getNotification();
+        sendNotification(NotificationDTO.builder()
+                .type(notification.getType())
+                .fromAddress(notification.getFromAddress())
+                .toAddress(notification.getToAddress())
+                .subject(notification.getSubject())
+                .body(body)
+                .build());
     }
 }

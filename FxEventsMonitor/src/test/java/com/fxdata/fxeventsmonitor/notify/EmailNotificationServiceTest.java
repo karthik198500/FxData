@@ -1,6 +1,7 @@
 package com.fxdata.fxeventsmonitor.notify;
 
 import com.fxdata.fxeventsmonitor.FxEventsMonitorApplication;
+import com.fxdata.fxeventsmonitor.dto.NotificationDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,12 @@ class EmailNotificationServiceTest {
 
     @Test
     void sendNotification() {
-        emailNotificationService.sendNotification();
+        emailNotificationService.sendNotification(NotificationDTO.builder()
+                .fromAddress("")
+                .toAddress("")
+                .subject("")
+                .attachmentLocation("")
+                .type("")
+                .build());
     }
 }

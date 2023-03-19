@@ -1,12 +1,13 @@
 package com.fxdata.fxeventsmonitor.writer;
 
-import com.fxrates.fxeventsmonitor.dto.FxRateDTO;
+import com.fxdata.fxeventsmonitor.dto.FxRateDTO;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.HeaderColumnNameMappingStrategyBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Log4j2
+@Component
 public class FxCSVWriter implements FxRateWriter<FxRateDTO> {
 
     private static final String FX_RATE_CSV_FILE_NAME_FORMAT = "YYYYMMdd_HHmm";
@@ -25,8 +27,9 @@ public class FxCSVWriter implements FxRateWriter<FxRateDTO> {
     private static final String CSV = ".csv";
 
     @Override
-    public void write(Collection<FxRateDTO> fxRateDTOList) {
-        File file = new File(getFileName());
+    public String write(Collection<FxRateDTO> fxRateDTOList) {
+        String fileName = getFileName();
+        File file = new File(fileName);
         //FxRateWriter writer = new FileWriter(resourceLoader.getResource("classpath:"+fxRate).getFile())
         try(Writer writer = new FileWriter(file);
             CSVWriter fxCsvWriter = new CSVWriter(writer, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, '"', "\n")){
@@ -41,6 +44,7 @@ public class FxCSVWriter implements FxRateWriter<FxRateDTO> {
             fxRateDTOList.forEach(fxRateDTO -> {
                 log.info(fxRateDTO.toString());
             });
+            return fileName;
         }catch (Exception e){
             log.error("Exception while writing",e);
             throw new RuntimeException(e);

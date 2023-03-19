@@ -1,6 +1,6 @@
 package com.fxdata.fxeventsmonitor.writer;
 
-import com.fxrates.fxeventsmonitor.dto.FxRateDTO;
+import com.fxdata.fxeventsmonitor.dto.FxRateDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

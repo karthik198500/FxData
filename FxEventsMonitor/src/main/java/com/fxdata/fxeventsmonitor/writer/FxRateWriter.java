@@ -5,5 +5,5 @@ import java.util.Collection;
 
 public interface FxRateWriter<T> {
 
-    void write(Collection<T> collection);
+    String write(Collection<T> collection);
 }

@@ -1,6 +1,6 @@
 package com.fxdata.fxeventsmonitor.config;
 
-import com.fxrates.fxeventsmonitor.EventsMonitor;
+import com.fxdata.fxeventsmonitor.EventsMonitor;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;

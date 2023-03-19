@@ -1,13 +1,15 @@
 package com.fxdata.fxratesmonitor;
 
 import com.fxdata.fxratesmonitor.config.EhsConfiguration;
+import com.fxdata.fxratesmonitor.config.FxEventsConfig;
+import com.fxdata.fxratesmonitor.config.WebClientConfig;
 import com.fxdata.fxratesmonitor.engine.FxRatesEngine;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({EhsConfiguration.class})
+@EnableConfigurationProperties({EhsConfiguration.class, FxEventsConfig.class, WebClientConfig.class})
 public class FxRatesMonitorApplication {
 
     private final FxRatesEngine fxRatesEngine;
@@ -18,6 +20,5 @@ public class FxRatesMonitorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FxRatesMonitorApplication.class, args);
-        System.out.println();
     }
 }
