@@ -6,6 +6,8 @@ import com.opencsv.bean.HeaderColumnNameMappingStrategy;
 import com.opencsv.bean.HeaderColumnNameMappingStrategyBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Log4j2
 @Component
@@ -40,7 +43,18 @@ public class FxCSVWriter implements FxRateWriter<FxRateDTO> {
             StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(fxCsvWriter)
                     .withMappingStrategy(strategy)
                     .build();
-            beanToCsv.write(fxRateDTOList);
+            fxRateDTOList.forEach(new Consumer<FxRateDTO>() {
+                @Override
+                public void accept(FxRateDTO fxRateDTO) {
+                    try {
+                        beanToCsv.write(fxRateDTO);
+                    } catch (CsvDataTypeMismatchException e) {
+                        throw new RuntimeException(e);
+                    } catch (CsvRequiredFieldEmptyException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
             fxRateDTOList.forEach(fxRateDTO -> {
                 log.info(fxRateDTO.toString());
             });

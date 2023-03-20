@@ -28,15 +28,18 @@ public class FxRatesEngine {
     private final EhsWebClientBuilder ehsWebClientBuilder;
     private final EhsConfiguration ehsConfiguration;
     private final NotificationService notificationService;
+    private final TopicSender topicSender;
+
     private ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
     private List<ForexRateMinDTO> previousForexRateMinDTOList = new ArrayList<>();
 
 
 
-    public FxRatesEngine(EhsWebClientBuilder ehsWebClientBuilder, EhsConfiguration ehsConfiguration, NotificationService notificationService) {
+    public FxRatesEngine(EhsWebClientBuilder ehsWebClientBuilder, EhsConfiguration ehsConfiguration, NotificationService notificationService, TopicSender topicSender) {
         this.ehsWebClientBuilder = ehsWebClientBuilder;
         this.ehsConfiguration = ehsConfiguration;
         this.notificationService = notificationService;
+        this.topicSender = topicSender;
     }
 
 
@@ -79,6 +82,7 @@ public class FxRatesEngine {
                             previousForexRateMinDTOList.clear();
                             previousForexRateMinDTOList.addAll(forexRateMinDTOList);
                         }else{
+                            sendToTopic(forexRateMinDTOList);
                             //do not do anything.
                             log.info("In the zip method. List of Forex Data matches with previous data. So ignoring.");
                         }
@@ -96,6 +100,12 @@ public class FxRatesEngine {
     }
 
     private void sendToTopic(List<ForexRateMinDTO> forexRateMinDTOList) {
+        try {
+            topicSender.send(forexRateMinDTOList);
+        } catch (Exception e) {
+            log.error("Error while sending message to topic",e);
+            throw new RuntimeException(e);
+        }
         forexRateMinDTOList.stream()
                 .forEach(log::info);
     }

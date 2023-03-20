@@ -8,14 +8,12 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@ConfigurationProperties(prefix = "fxevent")
+@ConfigurationProperties(prefix = "fxevents")
 @Validated
 @Setter
 @Getter
 public class FxEventsConfig {
 
-    @NotBlank
-    private String fileStorageLocation;
     private Notification notification;
 
     @Validated

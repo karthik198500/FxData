@@ -1,4 +1,0 @@
-FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-ADD target/FxRatesMonitor-0.0.1-SNAPSHOT.jar fxrates.jar
-ENTRYPOINT ["java","-jar","/fxrates.jar"]

@@ -15,11 +15,11 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class WebClientBuilder {
+public class FxWebClientBuilder {
 
     private final WebClientConfig webClientConfig;
 
-    public WebClientBuilder(WebClientConfig webClientConfig) {
+    public FxWebClientBuilder(WebClientConfig webClientConfig) {
         this.webClientConfig = webClientConfig;
     }
 

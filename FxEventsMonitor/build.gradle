@@ -33,8 +33,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.integration:spring-integration-amqp'
-    implementation 'org.springframework.integration:spring-integration-http'
-    implementation 'org.springframework.integration:spring-integration-mail'
+    //implementation 'org.springframework.integration:spring-integration-http'
+    //implementation 'org.springframework.integration:spring-integration-mail'
     implementation 'org.springframework.integration:spring-integration-webflux'
     implementation 'com.opencsv:opencsv:5.6'
     compileOnly 'org.projectlombok:lombok'
@@ -56,4 +56,11 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
     inputs.dir snippetsDir
     dependsOn test
+}
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'com.fxdata.fxeventsmonitor.FxEventsMonitorApplication'
+        )
+    }
 }

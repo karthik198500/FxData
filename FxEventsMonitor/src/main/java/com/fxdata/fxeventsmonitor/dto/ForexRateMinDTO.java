@@ -1,4 +1,4 @@
-package com.fxdata.fxratesmonitor.dto;
+package com.fxdata.fxeventsmonitor.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-public class ForexRateMinDTO implements Serializable{
+public class ForexRateMinDTO implements Serializable {
 
     @JsonProperty("code")
     private String code;
@@ -19,7 +19,6 @@ public class ForexRateMinDTO implements Serializable{
 
     @JsonProperty("close")
     private String close;
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

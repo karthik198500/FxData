@@ -1,6 +1,6 @@
 package com.fxdata.fxeventsmonitor.config;
 
-import com.fxdata.fxeventsmonitor.EventsMonitor;
+
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 //@Configuration
 public class RabbitMQConfig {
 
-    @Bean
+/*    @Bean
     SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
                                              MessageListenerAdapter listenerAdapter) {
         SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
@@ -23,6 +23,6 @@ public class RabbitMQConfig {
     @Bean
     MessageListenerAdapter listenerAdapter(EventsMonitor receiver) {
         return new MessageListenerAdapter(receiver, "receiveMessage");
-    }
+    }*/
 
 }

@@ -4,7 +4,6 @@ import com.fxdata.fxeventsmonitor.config.WebClientConfig;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -16,11 +15,11 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class WebClientBuilder {
+public class FxWebClientBuilder {
 
     private final WebClientConfig webClientConfig;
 
-    public WebClientBuilder(WebClientConfig webClientConfig) {
+    public FxWebClientBuilder(WebClientConfig webClientConfig) {
         this.webClientConfig = webClientConfig;
     }
 

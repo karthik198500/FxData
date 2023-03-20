@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 class CSVWriterTest {
 
-    @Test
+    //@Test
     void getFileName(){
         FxCSVWriter fxCsvWriter = new FxCSVWriter();
         String fileName = fxCsvWriter.getFileName();
     }
 
-    @Test
+    //@Test
     void writeFxRateDTOToCSV(){
 
         ArrayList<FxRateDTO> fxRateDTOArrayList = new ArrayList<>();

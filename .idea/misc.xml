@@ -6,6 +6,7 @@
     <file type="web" url="file://$PROJECT_DIR$/FxRatesMonitor" />
     <file type="web" url="file://$PROJECT_DIR$/NotificationService" />
     <file type="web" url="file://$PROJECT_DIR$/RabbitMQ" />
+    <file type="web" url="file://$PROJECT_DIR$/RabbitMQService" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
