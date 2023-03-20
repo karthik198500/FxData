@@ -40,7 +40,7 @@ public class NotificationController {
     public ResponseEntity<String> sendNotification(
             @RequestBody
             @Validated NotificationData notificationData) {
-        log.info("Notification service send notification invoked"+notificationData.toString());
+        log.info("Notification service, send notification method invoked "+notificationData.toString());
         if("email".equalsIgnoreCase(notificationData.getType())){
             notificationService.sendNotification(notificationData);
         }else{

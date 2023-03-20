@@ -42,31 +42,20 @@ public class FxCSVWriter implements FxRateWriter<FxRateDTO> {
         File file = new File(fileName);
         try(Writer writer = new FileWriter(file);
             CSVWriter fxCsvWriter = new CSVWriter(writer, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, '"', "\n")){
-            HeaderColumnNameMappingStrategy<FxRateDTO> strategy = new HeaderColumnNameMappingStrategyBuilder<FxRateDTO>()
-                    .build();
+
+            HeaderColumnNameMappingStrategy<FxRateDTO> strategy = new HeaderColumnNameMappingStrategyBuilder<FxRateDTO>().build();
             strategy.setType(FxRateDTO.class);
-            //strategy.setColumnOrderOnWrite(new OrderedComparatorIgnoringCase(TripInfo.FIELDS_ORDER));
             StatefulBeanToCsv beanToCsv = new StatefulBeanToCsvBuilder(fxCsvWriter)
                     .withMappingStrategy(strategy)
                     .build();
-            fxRateDTOList.forEach(new Consumer<FxRateDTO>() {
-                @Override
-                public void accept(FxRateDTO fxRateDTO) {
-                    try {
-                        beanToCsv.write(fxRateDTO);
-                    } catch (CsvDataTypeMismatchException e) {
-                        throw new RuntimeException(e);
-                    } catch (CsvRequiredFieldEmptyException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-            fxRateDTOList.forEach(fxRateDTO -> {
+
+            for (FxRateDTO fxRateDTO:fxRateDTOList) {
                 log.info(fxRateDTO.toString());
-            });
+                beanToCsv.write(fxRateDTO);
+            }
             return fileName;
         }catch (Exception e){
-            log.error("Exception while writing",e);
+            log.error("Exception while writing to CSV",e);
             throw new RuntimeException(e);
         }
     }

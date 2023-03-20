@@ -1,13 +1,10 @@
 package com.fxdata.fxratesmonitor.engine;
 
 import com.fxdata.fxratesmonitor.config.EhsConfiguration;
-import com.fxdata.fxratesmonitor.config.FxEventsConfig;
 import com.fxdata.fxratesmonitor.dto.ForexRateMinDTO;
-import com.fxdata.fxratesmonitor.dto.NotificationDTO;
 import com.fxdata.fxratesmonitor.httpclient.EhsWebClientBuilder;
 import com.fxdata.fxratesmonitor.notify.NotificationService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -47,10 +44,10 @@ public class FxRatesEngine {
     public void init(){
         //https://eodhistoricaldata.com/api/real-time/EUR.FOREX?api_token=demo&fmt=json
         // Call this service every minute.
-        scheduledExecutorService.scheduleWithFixedDelay(this::run, 10, 60, TimeUnit.SECONDS );
+        scheduledExecutorService.scheduleWithFixedDelay(this::fetchAndProcessForexData, 10, 60, TimeUnit.SECONDS );
     }
 
-    public void run(){
+    public void fetchAndProcessForexData(){
         try {
             Map<String, String> variableMap = new HashMap<>();
             variableMap.put(API_TOKEN, ehsConfiguration.getApiToken());
@@ -66,39 +63,51 @@ public class FxRatesEngine {
             Mono.zip(monoList, listOfResults -> Arrays.stream(listOfResults)
                     .collect(Collectors.toList()))
                     .log()
-                    .subscribe(listOfForexData -> {
-                        List<ForexRateMinDTO> forexRateMinDTOList = convertToDTOList(listOfForexData);
-                        if(previousForexRateMinDTOList.isEmpty()){
-                            log.info("In the zip method. List of Forex Data is new, so send to topic.");
-                            if(!forexRateMinDTOList.isEmpty()){
-                                previousForexRateMinDTOList.clear();
-                                previousForexRateMinDTOList.addAll(forexRateMinDTOList);
-                            }
-                            sendToTopic(forexRateMinDTOList);
-                        }else if(notSame(forexRateMinDTOList)){
-                            log.info("In the zip method. List of Forex Data is different from the existing data, so send to topic.");
-                            //Send to Rabbit MQ.
-                            sendToTopic(forexRateMinDTOList);
-                            previousForexRateMinDTOList.clear();
-                            previousForexRateMinDTOList.addAll(forexRateMinDTOList);
-                        }else{
-                            sendToTopic(forexRateMinDTOList);
-                            //do not do anything.
-                            log.info("In the zip method. List of Forex Data matches with previous data. So ignoring.");
-                        }
-                    }, throwable -> {
-                        log.error("Error when executing the queries to EHS Site. Send to notification service "+throwable.getMessage());
-                        notificationService.sendNotificationWithBody(throwable.getMessage());
-                    }, () -> {
-                        log.info("Successfully completed the query to the Ehs Site.");
-                    });
+                    .subscribe(
+                            this::processRawForexData,
+                            this::handleException,
+                            FxRatesEngine::handleSuccess);
         } catch (Exception exception) {
-            log.error("Error in the application. "+exception.getMessage(),exception );
-            notificationService.sendNotificationWithBody(exception.getMessage());
-            scheduledExecutorService.shutdown();
+            handleException(exception);
         }
     }
 
+    private void processRawForexData(List<Object> listOfForexData) {
+        List<ForexRateMinDTO> forexRateMinDTOList = convertToDTOList(listOfForexData);
+        if(previousForexRateMinDTOList.isEmpty()){
+            log.info("In the zip method. List of Forex Data is new, so send to topic.");
+            if(!forexRateMinDTOList.isEmpty()){
+                previousForexRateMinDTOList.clear();
+                previousForexRateMinDTOList.addAll(forexRateMinDTOList);
+            }
+            sendToTopic(forexRateMinDTOList);
+        }else if(notSame(forexRateMinDTOList)){
+            log.info("In the zip method. List of Forex Data is different from the existing data, so send to topic.");
+            //Send to Rabbit MQ.
+            sendToTopic(forexRateMinDTOList);
+            previousForexRateMinDTOList.clear();
+            previousForexRateMinDTOList.addAll(forexRateMinDTOList);
+        }else{
+            sendToTopic(forexRateMinDTOList);
+            //do not do anything.
+            log.info("In the zip method. List of Forex Data matches with previous data. So ignoring.");
+        }
+    }
+
+    private void handleException(Throwable throwable) {
+        log.error("Error when executing the queries to EHS Site. Send to notification service "+ throwable.getMessage());
+        notificationService.sendNotificationWithBody(throwable.getMessage());
+    }
+
+    private static void handleSuccess() {
+        log.info("Successfully completed the query to the Ehs Site.");
+    }
+
+    private void handleException(Exception exception) {
+        log.error("Error in the application. "+ exception.getMessage(), exception);
+        notificationService.sendNotificationWithBody(exception.getMessage());
+        scheduledExecutorService.shutdown();
+    }
     private void sendToTopic(List<ForexRateMinDTO> forexRateMinDTOList) {
         try {
             topicSender.send(forexRateMinDTOList);

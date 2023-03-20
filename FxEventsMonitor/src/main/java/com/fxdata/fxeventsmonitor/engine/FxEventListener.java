@@ -1,28 +1,24 @@
 package com.fxdata.fxeventsmonitor.engine;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.core.util.JsonParserDelegate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxdata.fxeventsmonitor.dto.ForexRateMinDTO;
-import com.fxdata.fxeventsmonitor.dto.FxRateDTO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @Log4j2
-public class EventListener {
+public class FxEventListener {
 
     private static final String FOREX_RATE_CHANGE_QUEUE = "q.forex-rate-change-queue";
     private final FxEventsEngine fxEventsEngine;
 
-    public EventListener(FxEventsEngine fxEventsEngine) {
+    public FxEventListener(FxEventsEngine fxEventsEngine) {
         this.fxEventsEngine = fxEventsEngine;
     }
 

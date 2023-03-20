@@ -29,5 +29,15 @@ public class NotificationData {
     @JsonProperty("attachmentLocation")
     private String attachmentLocation;
 
-
+    @Override
+    public String toString() {
+        return "NotificationData{" +
+                "fromAddress='" + fromAddress + '\'' +
+                ", toAddress='" + toAddress + '\'' +
+                ", type='" + type + '\'' +
+                ", subject='" + subject + '\'' +
+                ", body='" + body + '\'' +
+                ", attachmentLocation='" + attachmentLocation + '\'' +
+                '}';
+    }
 }
