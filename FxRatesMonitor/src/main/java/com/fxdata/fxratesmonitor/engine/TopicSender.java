@@ -29,7 +29,7 @@ public class TopicSender {
             ObjectMapper objectMapper = new ObjectMapper();
             String jsonData = objectMapper.writeValueAsString(forexRateMinDTOList);
             log.info("Sending data in json format"+jsonData);
-            rabbitTemplate.convertAndSend("t.fxevent.ratechange","email.fxevent.ratechange", jsonData);
+            rabbitTemplate.convertAndSend(queueName,"email.fxevent.ratechange", jsonData);
         } catch (JsonProcessingException e) {
             log.error("Error while converting forex data to json",e);
             throw new RuntimeException(e);

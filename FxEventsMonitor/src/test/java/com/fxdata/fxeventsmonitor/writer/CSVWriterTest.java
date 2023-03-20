@@ -9,8 +9,8 @@ class CSVWriterTest {
 
     //@Test
     void getFileName(){
-        FxCSVWriter fxCsvWriter = new FxCSVWriter();
-        String fileName = fxCsvWriter.getFileName();
+        /*FxCSVWriter fxCsvWriter = new FxCSVWriter();
+        String fileName = fxCsvWriter.getFileName();*/
     }
 
     //@Test
@@ -21,8 +21,8 @@ class CSVWriterTest {
                 .forex("AUDUS")
                 .value("0.65")
                 .build());
-        FxCSVWriter fxCsvWriter = new FxCSVWriter();
-        fxCsvWriter.write(fxRateDTOArrayList);
+        //FxCSVWriter fxCsvWriter = new FxCSVWriter();
+        //fxCsvWriter.write(fxRateDTOArrayList);
 
     }
 }

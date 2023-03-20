@@ -19,28 +19,14 @@ import java.util.List;
 @Log4j2
 public class EventListener {
 
+    private static final String FOREX_RATE_CHANGE_QUEUE = "q.forex-rate-change-queue";
     private final FxEventsEngine fxEventsEngine;
 
     public EventListener(FxEventsEngine fxEventsEngine) {
         this.fxEventsEngine = fxEventsEngine;
     }
 
-    /*@RabbitListener(queues = {"${queue.name}"})
-    public void receive(@Payload Message message) {
-        log.info("Message " + message);
-        String ultima = String.valueOf(message.getHeaders().get("ultima"));
-        if(ultima.equals("sim")){
-            System.out.println(ultima);
-        }
-        String payload = String.valueOf(message.getPayload());
-        fxEventsEngine.sendMessage(payload);
-
-        *//*if(payload.equals(1)) {
-            throw new BusinessException("testando a excecao");
-        }*//*
-    }*/
-
-    @RabbitListener(queues = "autoDeleteQueue1")
+    @RabbitListener(queues = FOREX_RATE_CHANGE_QUEUE)
     public void receive(Message message) {
         log.info("Received message ****"+message.getPayload().toString());
         ObjectMapper objectMapper = new ObjectMapper();
@@ -51,24 +37,5 @@ public class EventListener {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-
-
-    }
-
-    //@RabbitListener(queues = {"${queue.name}"})
-    //@RabbitListener(queues = "autoDeleteQueue2")
-    public void receive(List<ForexRateMinDTO> forexRateMinDTOList) {
-        log.info("Message ****" + forexRateMinDTOList);
-        /*String ultima = String.valueOf(message.getHeaders().get("ultima"));
-        if(ultima.equals("sim")){
-            System.out.println(ultima);
-        }*/
-        //String payload = String.valueOf(message.getPayload());
-        fxEventsEngine.sendMessage(forexRateMinDTOList);
-
-        /*if(payload.equals(1)) {
-            throw new BusinessException("testando a excecao");
-        }*/
     }
 }

@@ -7,11 +7,3 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
-  fxrabbitmqservice:
-    image: fxrabbitmqserviece:0.1
-  fxnotificationservice:
-    image: fxnotificationservice:0.1
-  fxratesmonitor:
-    image: fxratesmonitor:0.1
-  fxeventsmonitor:
-    image: fxeventsmonitor:0.1

@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -45,21 +46,10 @@ public class FxEventsEngine {
                     }else if( null != throwable) {
                         log.error("Exception while sending message to notification service",throwable);
                     }
-                    return null;
+                    return Optional.empty();
                 });
     }
 
-/*    public void sendMessage(String message){
-        CompletableFuture.supplyAsync(() -> FxEventsEngine.this.run( message),cachedThreadPool )
-                .handle((result, throwable) -> {
-                    if(null != result){
-                        result.subscribe(s -> log.info(s));
-                    }else if( null != throwable) {
-                        log.error("Exception while sending message to notification service",throwable);
-                    }
-                    return null;
-                });
-    }*/
 
     public Mono<String> run(List<ForexRateMinDTO> forexRateMinDTOList){
         //Process message from MQ
@@ -82,17 +72,6 @@ public class FxEventsEngine {
                         .build())
                 .collect(Collectors.toList());
     }
-    /*private static List<FxRateDTO> processMessage(String payload) {
-        List<FxRateDTO> fxRateDTOList = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            fxRateDTOList = mapper.readValue(payload, new TypeReference<List<FxRateDTO>>(){});
-        } catch (JsonProcessingException e) {
-            log.error("Error while processing the message",e);
-            throw new RuntimeException(e);
-        }
-        return fxRateDTOList;
-    }*/
 
     private Mono<String> sendNotification(String fileLocation) {
         FxEventsConfig.Notification notificationConfig = fxEventsConfig.getNotification();
