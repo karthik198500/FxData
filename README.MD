@@ -1,51 +1,25 @@
-API Key
-6413c77b46bc25.28701840
+
+High level Design
+![Design.png](Design.png)
+
+Design Principles
+SOLID principles
 
 Repositories
 We can use a separate repository for each service
 Probably use git submodules?
 
 Notification Service
-
-
 Kafka vs RabbitMQ
 Better to use Kafka
 
+Docker container
+
+
 
 Design
-
 Websocket connection from the spring server to all the different rest services.
 Collect the data for every one min in a asynchronous way.
-check if the data has changes from previous.
-
-If yes sent a message to rabbitMQ
-
-Another spring boot service will consume the message and for a csv file and send to
-an email address.
-
-docker-compose up -d rabbitmq
-
-##########################################
-# Dockerfile to change from root to
-# non-root privilege
-###########################################
-# Base image is CentOS 7
-FROM Centos:7
-# Add a new user "john" with user id 8877
-RUN useradd -u 8877 john
-# Change to non-root privilege
-USER john
-https://www.thegeekdiary.com/run-docker-as-a-non-root-user/
+check if the data has changes from previous and send only if the content has changed.
 
 
-#Pull the base image as Ubuntu
-FROM ubuntu:latest
-
-#Add a user with userid 8877 and name nonroot
-RUN useradd −u 8877 nonroot
-
-#Run Container as nonroot
-USER nonroot
-
-
- 
