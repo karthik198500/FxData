@@ -5,6 +5,11 @@ High level Design
 Design Principles
 SOLID principles
 
+
+Testing 
+Used MockWebServer for testing the notification service
+
+
 Repositories
 We can use a separate repository for each service
 Probably use git submodules?

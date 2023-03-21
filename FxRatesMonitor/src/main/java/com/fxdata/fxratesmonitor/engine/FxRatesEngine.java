@@ -27,8 +27,8 @@ public class FxRatesEngine {
     private final NotificationService notificationService;
     private final TopicSender topicSender;
 
-    private ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
-    private List<ForexRateMinDTO> previousForexRateMinDTOList = new ArrayList<>();
+    private final ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
+    private final List<ForexRateMinDTO> previousForexRateMinDTOList = new ArrayList<>();
 
 
 
@@ -47,7 +47,7 @@ public class FxRatesEngine {
         scheduledExecutorService.scheduleWithFixedDelay(this::fetchAndProcessForexData, 10, 60, TimeUnit.SECONDS );
     }
 
-    public void fetchAndProcessForexData(){
+    public Mono<List<Object>> fetchAndProcessForexData(){
         try {
             Map<String, String> variableMap = new HashMap<>();
             variableMap.put(API_TOKEN, ehsConfiguration.getApiToken());
@@ -60,16 +60,18 @@ public class FxRatesEngine {
                 log.info("Querying forex type "+forexType);
                 monoList.add(getForexData(webClient, forexType));
             }
-            Mono.zip(monoList, listOfResults -> Arrays.stream(listOfResults)
-                    .collect(Collectors.toList()))
-                    .log()
+            Mono<List<Object>> zip = Mono.zip(monoList, listOfResults -> Arrays.stream(listOfResults)
+                    .collect(Collectors.toList()));
+            zip.log()
                     .subscribe(
                             this::processRawForexData,
                             this::handleException,
                             FxRatesEngine::handleSuccess);
+            return zip;
         } catch (Exception exception) {
             handleException(exception);
         }
+        return null;
     }
 
     private void processRawForexData(List<Object> listOfForexData) {

@@ -2,10 +2,11 @@ package com.fxdata.fxratesmonitor.notify;
 
 
 import com.fxdata.fxratesmonitor.dto.NotificationDTO;
+import reactor.core.publisher.Mono;
 
 public interface NotificationService {
 
-    void sendNotification(NotificationDTO notificationDTO);
+    Mono<String> sendNotification(NotificationDTO notificationDTO);
 
-    void sendNotificationWithBody(String body);
+    Mono<String> sendNotificationWithBody(String body);
 }

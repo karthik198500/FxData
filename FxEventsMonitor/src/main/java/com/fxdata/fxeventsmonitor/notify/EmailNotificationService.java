@@ -16,28 +16,15 @@ public class EmailNotificationService implements NotificationService {
 
     private final FxWebClientBuilder fxWebClientBuilder;
     private final FxEventsConfig fxEventsConfig;
-    private WebClient webClient;
 
     public EmailNotificationService(FxWebClientBuilder fxWebClientBuilder, FxEventsConfig fxEventsConfig) {
         this.fxWebClientBuilder = fxWebClientBuilder;
         this.fxEventsConfig = fxEventsConfig;
     }
 
-    public synchronized void initializeWebClient(String url){
-        if(null!=url){
-            webClient = fxWebClientBuilder.build(url);
-        }else{
-            webClient = fxWebClientBuilder.build(fxEventsConfig.getNotification().getServiceUrl());
-        }
-
-    }
-
-
     @Override
     public Mono<String> sendNotification(NotificationDTO notificationDTO) {
-        if(webClient == null){
-            initializeWebClient(null);
-        }
+        WebClient webClient = fxWebClientBuilder.build(fxEventsConfig.getNotification().getServiceUrl());
         Mono<String> stringMono = webClient.post()
                 .body(Mono.just(notificationDTO), NotificationDTO.class)
                 .retrieve()

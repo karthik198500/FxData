@@ -24,18 +24,19 @@ public class EmailNotificationService implements NotificationService {
     }
 
     @Override
-    public void sendNotification(NotificationDTO notificationDTO) {
+    public Mono<String> sendNotification(NotificationDTO notificationDTO) {
         WebClient webClient = fxWebClientBuilder.build(fxEventsConfig.getNotification().getServiceUrl());
-        Mono<String> stringMono = webClient.post()
+        return webClient.post()
                 .body(Mono.just(notificationDTO), NotificationDTO.class)
                 .retrieve()
                 .bodyToMono(String.class);
     }
 
+
     @Override
-    public void sendNotificationWithBody(String body) {
+    public Mono<String> sendNotificationWithBody(String body) {
         FxEventsConfig.Notification notification = fxEventsConfig.getNotification();
-        sendNotification(NotificationDTO.builder()
+        return sendNotification(NotificationDTO.builder()
                 .type(notification.getType())
                 .fromAddress(notification.getFromAddress())
                 .toAddress(notification.getToAddress())
