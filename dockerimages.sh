@@ -20,7 +20,7 @@ cd /Users/kkasiraju/dev/MyMusings/FxData/FxRatesMonitor
 ./gradlew build
 docker build -t fxratesmonitor:0.1 .
 
-cd /Users/kkasiraju/dev/MyMusings/FxData/NotificationService
+cd /Users/kkasiraju/dev/MyMusings/FxData/FxEventsMonitor
 ./gradlew build
 docker build -t fxeventsmonitor:0.1 .
 

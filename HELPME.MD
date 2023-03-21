@@ -50,4 +50,22 @@ RUN useradd −u 8877 nonroot
 USER nonroot
 
 
- 
+
+docker system prune -a
+delete all images
+docker stop $(docker ps -a -q)
+
+delete all containers
+docker rm $(docker ps -a -q)
+
+Delete all un-tagged (or intermediate) images:
+sudo docker rmi $( sudo docker images | grep '<none>' | tr -s ' ' | cut -d ' ' -f 3)
+docker rmi $( docker images | grep '<none>' | tr -s ' ' | cut -d ' ' -f 3)
+
+
+docker-compose --profile core up
+docker-compose --profile rabbitmq up
+docker-compose --profile service up
+docker-compose --profile consumer up
+
+

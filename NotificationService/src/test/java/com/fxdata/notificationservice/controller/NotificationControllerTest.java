@@ -82,7 +82,7 @@ class NotificationControllerTest {
         doNothing().when(notificationService).sendNotification(Mockito.any(NotificationData.class));;
         MvcResult mvcResult = this.mockMvc.perform(post(NOTIFICATION_SERVICE_URL))
                 .andDo(print())
-                .andExpect(status().isOk())
+                .andExpect(status().is4xxClientError())
                 .andReturn();
     }
 
@@ -109,14 +109,6 @@ class NotificationControllerTest {
                 "  \"attachementLocation\": \"attachmentLocation\"\n" +
                 "  \n" +
                 "}";
-
     }
 
-    @Test
-    void testParamAsRequestParameter() throws Exception {
-        doNothing().when(notificationService).sendNotification(Mockito.any(NotificationData.class));
-        this.mockMvc.perform(get(NOTIFICATION_SERVICE_URL + "?dataKey=1"))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
 }

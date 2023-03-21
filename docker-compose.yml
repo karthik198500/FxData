@@ -3,7 +3,52 @@ version: '3.1'
 services:
   rabbitmq:
     image: rabbitmq:management
+    profiles: ["core"]
     restart: on-failure
     ports:
       - "5672:5672"
       - "15672:15672"
+  fxrabbitmqservice:
+    image: fxrabbitmqserviece:0.1
+    profiles: ["rabbitmq"]
+    depends_on:
+      rabbitmq:
+        condition: service_started
+    ports:
+      - "8010:8010"
+  fxnotificationservice:
+    image: fxnotificationservice:0.1
+    profiles: ["service"]
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      fxrabbitmqservice:
+        condition: service_started
+    ports:
+      - "8020:8020"
+  fxratesmonitor:
+    image: fxratesmonitor:0.1
+    profiles: ["service"]
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      fxrabbitmqservice:
+        condition: service_started
+      fxnotificationservice:
+        condition: service_started
+    ports:
+      - "8030:8030"
+  fxeventsmonitor:
+    image: fxeventsmonitor:0.1
+    profiles: ["consumer"]
+    depends_on:
+      rabbitmq:
+        condition: service_started
+      fxrabbitmqservice:
+        condition: service_started
+      fxnotificationservice:
+        condition: service_started
+      fxratesmonitor:
+        condition: service_started
+    ports:
+      - "8040:8040"
