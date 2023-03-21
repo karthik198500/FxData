@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/FxData.iml" filepath="$PROJECT_DIR$/FxData.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FxEventsMonitor.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FxEventsMonitor.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FxEventsMonitor.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FxEventsMonitor.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FxRatesMonitor.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FxRatesMonitor.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/NotificationService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/NotificationService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/NotificationService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/NotificationService.test.iml" />

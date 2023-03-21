@@ -2,36 +2,69 @@ package com.fxdata.fxeventsmonitor.notify;
 
 import com.fxdata.fxeventsmonitor.FxEventsMonitorApplication;
 import com.fxdata.fxeventsmonitor.dto.NotificationDTO;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.fxdata.fxeventsmonitor.util.Some;
+import okhttp3.MediaType;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import reactor.core.publisher.Mono;
 
-@SpringBootTest(classes = FxEventsMonitorApplication.class)
+import java.io.IOException;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = {"classpath:application-test.properties"})
 class EmailNotificationServiceTest {
 
     @Autowired
     EmailNotificationService emailNotificationService;
 
-    @BeforeEach
-    void setUp() {
+    public static MockWebServer mockWebServer;
+
+    @Test
+    void contextLoads() {
     }
 
-    @AfterEach
-    void tearDown() {
+    @BeforeAll
+    static void setUp() throws IOException{
+        mockWebServer = new MockWebServer();
+        mockWebServer.start();
+    }
+
+    @AfterAll
+    static void tearDown() throws IOException {
+        mockWebServer.shutdown();
+    }
+
+
+    @BeforeEach
+    void initialize() {
+        String baseUrl = String.format("http://localhost:%s",
+                mockWebServer.getPort());
+        emailNotificationService.initializeWebClient(baseUrl);
+        //"/api/v1/notification-service/"
     }
 
     @Test
     void sendNotification() {
-        emailNotificationService.sendNotification(NotificationDTO.builder()
-                .fromAddress("")
-                .toAddress("")
-                .subject("")
-                .attachmentLocation("")
-                .type("")
+
+        String emailResponse = "Successfully sent data";
+
+        mockWebServer.enqueue(new MockResponse()
+                .setBody(emailResponse)
+                .addHeader("Content-Type", "application/json")
+        );
+
+        Mono<String> email = emailNotificationService.sendNotification(NotificationDTO.builder()
+                .fromAddress(Some.email())
+                .toAddress(Some.email())
+                .subject(Some.subject())
+                .attachmentLocation(Some.someFile().getAbsolutePath())
+                .type("email")
                 .build());
+        Assertions.assertEquals(emailResponse,email.block());
     }
 }

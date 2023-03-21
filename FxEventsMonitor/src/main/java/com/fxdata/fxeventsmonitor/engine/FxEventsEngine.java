@@ -1,8 +1,5 @@
 package com.fxdata.fxeventsmonitor.engine;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxdata.fxeventsmonitor.config.FxEventsConfig;
 import com.fxdata.fxeventsmonitor.dto.ForexRateMinDTO;
 import com.fxdata.fxeventsmonitor.dto.FxRateDTO;
@@ -13,7 +10,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -38,16 +34,23 @@ public class FxEventsEngine {
         this.fxEventsConfig = fxEventsConfig;
     }
 
-    public void sendMessage(List<ForexRateMinDTO> message){
-        CompletableFuture.supplyAsync(() -> FxEventsEngine.this.run( message),cachedThreadPool )
-                .handle((result, throwable) -> {
-                    if(null != result){
-                        result.subscribe(s -> log.info(s));
-                    }else if( null != throwable) {
-                        log.error("Exception while sending message to notification service",throwable);
-                    }
-                    return Optional.empty();
-                });
+    public CompletableFuture<Object> sendMessage(List<ForexRateMinDTO> message){
+        if(null != message) {
+            return CompletableFuture.supplyAsync(() -> FxEventsEngine.this.run(message), cachedThreadPool)
+                    .handle((result, throwable) -> {
+                        if (null != result) {
+                            result.subscribe(s -> log.info(s));
+                            return result;
+                        } else if (null != throwable) {
+                            log.error("Exception while sending message to notification service", throwable);
+                            throw new RuntimeException(throwable);
+                        }
+                        return "Successfully deposited the message to process";
+                    });
+
+        }
+        log.warn("FxEvents Engine received empty messages. Nothing to process");
+        return null;
     }
 
 

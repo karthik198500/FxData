@@ -8,23 +8,36 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
+
 @Service
 public class EmailNotificationService implements NotificationService {
 
 
     private final FxWebClientBuilder fxWebClientBuilder;
     private final FxEventsConfig fxEventsConfig;
-    private final WebClientConfig webClientConfig;
+    private WebClient webClient;
 
-    public EmailNotificationService(FxWebClientBuilder fxWebClientBuilder, FxEventsConfig fxEventsConfig, WebClientConfig webClientConfig) {
+    public EmailNotificationService(FxWebClientBuilder fxWebClientBuilder, FxEventsConfig fxEventsConfig) {
         this.fxWebClientBuilder = fxWebClientBuilder;
         this.fxEventsConfig = fxEventsConfig;
-        this.webClientConfig = webClientConfig;
     }
+
+    public synchronized void initializeWebClient(String url){
+        if(null!=url){
+            webClient = fxWebClientBuilder.build(url);
+        }else{
+            webClient = fxWebClientBuilder.build(fxEventsConfig.getNotification().getServiceUrl());
+        }
+
+    }
+
 
     @Override
     public Mono<String> sendNotification(NotificationDTO notificationDTO) {
-        WebClient webClient = fxWebClientBuilder.build(fxEventsConfig.getNotification().getServiceUrl());
+        if(webClient == null){
+            initializeWebClient(null);
+        }
         Mono<String> stringMono = webClient.post()
                 .body(Mono.just(notificationDTO), NotificationDTO.class)
                 .retrieve()
