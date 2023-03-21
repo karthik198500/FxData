@@ -50,17 +50,4 @@ public class NotificationController {
         return  ResponseEntity.ok("Your message is successfully sent.");
     }
 
-
-    /*
-     * Generic URL to test the working of the application.
-     * This can be deleted in production grade application.
-     * */
-
-    @ApiOperation(value = "Phone Number Parser", response = String.class)
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> welcomePage() {
-        log.info("Notification Service welcome page");
-        return  ResponseEntity.ok("Welcome to Notification Service");
-
-    }
 }

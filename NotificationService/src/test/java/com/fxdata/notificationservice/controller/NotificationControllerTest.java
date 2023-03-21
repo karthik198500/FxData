@@ -3,11 +3,9 @@ package com.fxdata.notificationservice.controller;
 import com.fxdata.notificationservice.dto.NotificationData;
 import com.fxdata.notificationservice.service.NotificationService;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,10 +15,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -61,18 +58,8 @@ class NotificationControllerTest {
 
 
     @Test
-    void retrieveDataKey() throws Exception {
+    void emptyBodyThrowsAnValidationError() throws Exception {
         doNothing().when(notificationService).sendNotification(Mockito.any(NotificationData.class));
-        /*Assertions.assertThrowsExactly(MethodArgumentNotValidException.class, new Executable() {
-            @Override
-            public void execute() throws Throwable {
-                mockMvc.perform(
-                        post(NOTIFICATION_SERVICE_URL)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content("{}")
-                );
-            }
-        });*/
         this.mockMvc.perform(
                 post(NOTIFICATION_SERVICE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -83,31 +70,46 @@ class NotificationControllerTest {
     }
 
     @Test
-    void retrieveDataKeyWrongMethod() throws Exception {
+    void wrongMethodThrowsAnError() throws Exception {
         doNothing().when(notificationService).sendNotification(Mockito.any(NotificationData.class));;
-        this.mockMvc.perform(post(NOTIFICATION_SERVICE_URL + "1"))
+        this.mockMvc.perform(get(NOTIFICATION_SERVICE_URL))
                 .andDo(print())
                 .andExpect(status().isMethodNotAllowed());
     }
 
     @Test
-    void retrieveDataKeyNoArgument() throws Exception {
-
+    void noData() throws Exception {
         doNothing().when(notificationService).sendNotification(Mockito.any(NotificationData.class));;
-        this.mockMvc.perform(get(NOTIFICATION_SERVICE_URL))
+        MvcResult mvcResult = this.mockMvc.perform(post(NOTIFICATION_SERVICE_URL))
                 .andDo(print())
-                .andExpect(status().isNotFound());
-
+                .andExpect(status().isOk())
+                .andReturn();
     }
 
     @Test
-    void retrieveDataKeyNoData() throws Exception {
-        doNothing().when(notificationService).sendNotification(Mockito.any(NotificationData.class));;
-        MvcResult mvcResult = this.mockMvc.perform(get(NOTIFICATION_SERVICE_URL + "10"))
-                .andDo(print())
-                .andExpect(status().isNotFound())
+    void throwsAnError() throws Exception {
+        doThrow(new RuntimeException("Error")).when(notificationService).sendNotification(Mockito.any(NotificationData.class));;
+        MvcResult mvcResult = this.mockMvc.perform(
+                post(NOTIFICATION_SERVICE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getJsonContent())
+        ).andDo(print())
+                .andExpect(status().is5xxServerError())
                 .andReturn();
-        //Assertions.assertTrue(mvcResult.getResponse().getContentAsString().contains(DATAKEY_NOT_FOUND));
+    }
+
+    private String getJsonContent() {
+        return "{\n" +
+                " \n" +
+                "  \"fromAddress\": \"someEmail@aus.com.au\",\n" +
+                "  \"toAddress\": \"someEmail@aus.com.au\",\n" +
+                "  \"subject\":\"subject\",\n" +
+                "  \"type\":\"email\",\n" +
+                "  \"body\":\"body\",\n" +
+                "  \"attachementLocation\": \"attachmentLocation\"\n" +
+                "  \n" +
+                "}";
+
     }
 
     @Test
