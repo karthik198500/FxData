@@ -10,6 +10,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/NotificationService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/NotificationService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/NotificationService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/NotificationService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RabbitMQService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/RabbitMQService.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.fxdata.RabbitMQService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.fxdata.RabbitMQService.main.iml" />
     </modules>
   </component>
 </project>
