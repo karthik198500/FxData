@@ -16,15 +16,15 @@ sh dockerimages.sh
 
 Run the docker-compose up based on profiles.
 
-docker-compose --profile core up
-Wait
-docker-compose --profile rabbitmq up
-Run http://localhost:8010/actuator/health on browser and check the health status - up
-Run http://localhost:15672/#/queues to check if queues are created successfully.
-Wait
-docker-compose --profile service up
-Wait
-docker-compose --profile consumer up
+- docker-compose --profile core up
+  - Wait
+- docker-compose --profile rabbitmq up
+  - Run http://localhost:8010/actuator/health on browser and check the health status - up
+  - Run http://localhost:15672/#/queues to check if queues are created successfully.
+  - Wait
+- docker-compose --profile service up
+  - Wait
+- docker-compose --profile consumer up
 
 check https://mailosaur.com/app/ with your username/password to check for mail message with CSV attachment.
 
