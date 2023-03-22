@@ -2,6 +2,34 @@
 High level Design
 ![Design.png](Design.png)
 
+Sign up for
+https://mailosaur.com/app/signup/
+Configure the below from the SMTP & POP3 credential after logging in.
+/FxData/NotificationService/src/main/resources/application.properties
+spring.mail.username=avbpwlvj@mailosaur.net
+spring.mail.password=3B3Vo3ltLTE428mL
+
+Running the application
+Download code from git 
+In the root folder run which creates all docker images.
+sh dockerimages.sh
+
+Run the docker-compose up based on profiles.
+
+docker-compose --profile core up
+Wait
+docker-compose --profile rabbitmq up
+Run http://localhost:8010/actuator/health on browser and check the health status - up
+Run http://localhost:15672/#/queues to check if queues are created successfully.
+Wait
+docker-compose --profile service up
+Wait
+docker-compose --profile consumer up
+
+check https://mailosaur.com/app/ with your username/password to check for mail message with CSV attachment.
+
+End result
+![img.png](img.png)
 
 Major Design concepts
 - Not blocking
@@ -12,7 +40,7 @@ Major Design concepts
 There are total five docker instances in the whole application.
 
 RabbitMQ
-
+  - Rabbit MQ.
 RabbitMQService
 Contains all configuration related to Rabbit MQ
 - Queue creation

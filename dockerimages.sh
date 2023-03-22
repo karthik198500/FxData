@@ -1,4 +1,6 @@
-cd /Users/kkasiraju/dev/MyMusings/FxData
+phome=$PWD
+
+cd $phome
 docker ps -a
 docker images
 
@@ -8,23 +10,23 @@ docker image rm -f fxratesmonitor:0.1
 docker image rm -f fxeventsmonitor:0.1
 
 
-cd /Users/kkasiraju/dev/MyMusings/FxData/RabbitMQService
+cd $phome/RabbitMQService
 ./gradlew build
 docker build -t fxrabbitmqserviece:0.1 .
 
-cd /Users/kkasiraju/dev/MyMusings/FxData/NotificationService
+cd $phome/NotificationService
 ./gradlew build
 docker build -t fxnotificationservice:0.1 .
 
-cd /Users/kkasiraju/dev/MyMusings/FxData/FxRatesMonitor
+cd $phome/FxRatesMonitor
 ./gradlew build
 docker build -t fxratesmonitor:0.1 .
 
-cd /Users/kkasiraju/dev/MyMusings/FxData/FxEventsMonitor
+cd $phome/FxEventsMonitor
 ./gradlew build
 docker build -t fxeventsmonitor:0.1 .
 
-cd /Users/kkasiraju/dev/MyMusings/FxData/
+cd $phome
 docker images
 #docker-compose up
 
