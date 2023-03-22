@@ -102,7 +102,8 @@ List of enhancements
 - If EHSHistoricalData support push mechanism instead of pooling it would improve performance.Probably web hooks
 - If more messages and types needs to supported we can use the further topics and queues to handle data appropriately.
 - Write a common library which can be used across these four modules.
-- 
+- Jackson converter using a common library.
+- Introduce Spring Retry mechanism where required.
 
 
 Design Principles
