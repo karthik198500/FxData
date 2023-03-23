@@ -106,6 +106,41 @@ List of enhancements
 - Introduce Spring Retry mechanism where required.
 - We can use logback SMTP log to send emails.
 
+For each service we can always think about a data store 
+- Write to DB and use a CQRS mechanism
+  - Only service will write to DB
+  - Lot of services will act on the DB to process the data.
+
+When ever there is too much data we think about
+- Rate limiting
+- Circuit breaker pattern
+- Bulkhead pattern - One service down should not impact other services.
+- 
+
+Other enhancements
+- Reuse webclients
+- Websockets
+
+RabbitMQ pushes events to events monitor
+- Acknowledgment mechanism
+- Back pressure
+- parallel processing
+
+Events Monitor
+If data increase we can use the 
+- For example divide data based on the geography.
+- we can write various exchange names and divide data based on that
+- We can write lambda
+
+Have a data store at each layer
+- Send data to and control it
+- Circuit breaker pattern
+- Rate limiting
+- Leaky bucket algorithm
+- 12 Factor App for microservices
+  - 
+
+
 Design Principles
 SOLID principles
 
