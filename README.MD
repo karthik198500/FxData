@@ -104,7 +104,7 @@ List of enhancements
 - Write a common library which can be used across these four modules.
 - Jackson converter using a common library.
 - Introduce Spring Retry mechanism where required.
-
+- We can use logback SMTP log to send emails.
 
 Design Principles
 SOLID principles
