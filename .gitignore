@@ -19,7 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 .idea
-.idea/sonarlint/issuestore/*
+.idea/sonarlint/*/*
 *.iws
 *.iml
 *.ipr
