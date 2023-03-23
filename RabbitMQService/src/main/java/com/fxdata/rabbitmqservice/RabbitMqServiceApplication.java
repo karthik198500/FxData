@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RabbitMqServiceApplication {
 
     public static void main(String[] args) {
-       log.info("This is application starting");
         SpringApplication.run(RabbitMqServiceApplication.class, args);
+        log.info("Rabbit MQ Service application started");
     }
 
 }

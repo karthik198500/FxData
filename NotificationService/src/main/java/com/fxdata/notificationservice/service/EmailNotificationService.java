@@ -41,6 +41,7 @@ public class EmailNotificationService implements NotificationService {
             log.debug("Sending mail with the below details"+message);
             emailSender.send(message);
         } catch (MessagingException e) {
+            log.error("Exception while sending an email"+notificationData.toString(),e);
             throw new RuntimeException(e);
         }
     }

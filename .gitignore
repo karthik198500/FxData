@@ -1,3 +1,5 @@
+.idea/sonarlint/*/*
+.idea/sonarlint/issuestore/index.pb
 HELP.md
 .gradle
 build/
