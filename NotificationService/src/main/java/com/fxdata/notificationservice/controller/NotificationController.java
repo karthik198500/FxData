@@ -35,6 +35,7 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
+    //TODO can use the spring web flux here.
     @ApiOperation(value = "send notification", response = String.class)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> sendNotification(
@@ -42,6 +43,8 @@ public class NotificationController {
             @Validated NotificationData notificationData) {
         log.info("Notification service, send notification method invoked "+notificationData.toString());
         if("email".equalsIgnoreCase(notificationData.getType())){
+            //Java mail does not offer any acknowledgment. We can return success from service if there are
+            //no exceptions thrown.
             notificationService.sendNotification(notificationData);
         }else{
             throw new RuntimeException("Notification Type is not supported."+notificationData.getType());

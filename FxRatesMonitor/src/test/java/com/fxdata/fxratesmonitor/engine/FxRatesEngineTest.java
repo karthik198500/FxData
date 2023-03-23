@@ -3,21 +3,21 @@ package com.fxdata.fxratesmonitor.engine;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxdata.fxratesmonitor.config.EhsConfiguration;
-import com.fxdata.fxratesmonitor.dto.ForexRateMinDTO;
 import com.fxdata.fxratesmonitor.httpclient.EhsWebClientBuilder;
 import com.fxdata.fxratesmonitor.notify.NotificationService;
 import com.fxdata.fxratesmonitor.util.AForexRateMinDTO;
+import com.fxdata.fxratesmonitor.util.ExceptionHandler;
 import com.fxdata.fxratesmonitor.util.Some;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.TestPropertySource;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class FxRatesEngineTest {
@@ -47,6 +46,9 @@ class FxRatesEngineTest {
 
     @MockBean
     private NotificationService notificationService;
+
+    @MockBean
+    private ExceptionHandler exceptionHandler;
 
     @Test
     void contextLoads() {
@@ -71,8 +73,8 @@ class FxRatesEngineTest {
 
         ehsConfiguration = mock(EhsConfiguration.class);
         topicSender = mock(TopicSender.class);
-
         notificationService = mock(NotificationService.class);
+        exceptionHandler = mock(ExceptionHandler.class);
 
 
 
@@ -84,11 +86,13 @@ class FxRatesEngineTest {
         when(ehsConfiguration.getConnectTimeout()).thenReturn(60000);
         when(ehsConfiguration.getReadTimeout()).thenReturn(60000);
         when(ehsConfiguration.getWriteTimeout()).thenReturn(60000);
+        doNothing().when(exceptionHandler).handleException(Mockito.any(Throwable.class));
+
 
 
         ehsWebClientBuilder = spy(new EhsWebClientBuilder(ehsConfiguration));
 
-        fxRatesEngine = spy(new FxRatesEngine(ehsWebClientBuilder,ehsConfiguration,notificationService,topicSender));
+        fxRatesEngine = spy(new FxRatesEngine(ehsWebClientBuilder,ehsConfiguration,notificationService,topicSender, exceptionHandler));
     }
 
     @Test

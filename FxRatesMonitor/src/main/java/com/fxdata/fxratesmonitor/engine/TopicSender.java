@@ -3,6 +3,7 @@ package com.fxdata.fxratesmonitor.engine;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fxdata.fxratesmonitor.dto.ForexRateMinDTO;
+import com.fxdata.fxratesmonitor.util.ExceptionHandler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,8 +20,11 @@ public class TopicSender {
     @Value("${queue.name}")
     private String queueName;
 
-    public TopicSender(RabbitTemplate rabbitTemplate) {
+    private ExceptionHandler exceptionHandler;
+
+    public TopicSender(RabbitTemplate rabbitTemplate, ExceptionHandler exceptionHandler) {
         this.rabbitTemplate = rabbitTemplate;
+        this.exceptionHandler = exceptionHandler;
     }
 
     public void send(List<ForexRateMinDTO> forexRateMinDTOList) {
@@ -31,7 +35,7 @@ public class TopicSender {
             rabbitTemplate.convertAndSend(queueName, EMAIL_FX_EVENT_RATECHANGE, jsonData);
         } catch (JsonProcessingException e) {
             log.error("Error while converting forex data to json",e);
-            throw new RuntimeException(e);
+            exceptionHandler.handleException(e);
         }
 
     }

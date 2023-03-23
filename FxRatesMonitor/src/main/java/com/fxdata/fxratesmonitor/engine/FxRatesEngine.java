@@ -4,6 +4,7 @@ import com.fxdata.fxratesmonitor.config.EhsConfiguration;
 import com.fxdata.fxratesmonitor.dto.ForexRateMinDTO;
 import com.fxdata.fxratesmonitor.httpclient.EhsWebClientBuilder;
 import com.fxdata.fxratesmonitor.notify.NotificationService;
+import com.fxdata.fxratesmonitor.util.ExceptionHandler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,19 +25,21 @@ public class FxRatesEngine {
     private static final String FORMAT = "fmt";
     private final EhsWebClientBuilder ehsWebClientBuilder;
     private final EhsConfiguration ehsConfiguration;
-    private final NotificationService notificationService;
     private final TopicSender topicSender;
+
+    private final ExceptionHandler exceptionHandler;
+
 
     private final ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(2);
     private final List<ForexRateMinDTO> previousForexRateMinDTOList = new ArrayList<>();
 
 
 
-    public FxRatesEngine(EhsWebClientBuilder ehsWebClientBuilder, EhsConfiguration ehsConfiguration, NotificationService notificationService, TopicSender topicSender) {
+    public FxRatesEngine(EhsWebClientBuilder ehsWebClientBuilder, EhsConfiguration ehsConfiguration, NotificationService notificationService, TopicSender topicSender, ExceptionHandler exceptionHandler) {
         this.ehsWebClientBuilder = ehsWebClientBuilder;
         this.ehsConfiguration = ehsConfiguration;
-        this.notificationService = notificationService;
         this.topicSender = topicSender;
+        this.exceptionHandler = exceptionHandler;
     }
 
 
@@ -65,11 +68,11 @@ public class FxRatesEngine {
             zip.log()
                     .subscribe(
                             this::processRawForexData,
-                            this::handleException,
+                            exceptionHandler::handleException,
                             FxRatesEngine::handleSuccess);
             return zip;
-        } catch (Exception exception) {
-            handleException(exception);
+        } catch (Throwable exception) {
+            exceptionHandler.handleException(exception);
         }
         return null;
     }
@@ -96,29 +99,21 @@ public class FxRatesEngine {
         }
     }
 
-    private void handleException(Throwable throwable) {
-        log.error("Error when executing the queries to EHS Site. Send to notification service "+ throwable.getMessage());
-        notificationService.sendNotificationWithBody(throwable.getMessage());
-    }
+
 
     private static void handleSuccess() {
         log.info("Successfully completed the query to the Ehs Site.");
     }
 
-    private void handleException(Exception exception) {
-        log.error("Error in the application. "+ exception.getMessage(), exception);
-        notificationService.sendNotificationWithBody(exception.getMessage());
-        scheduledExecutorService.shutdown();
-    }
     private void sendToTopic(List<ForexRateMinDTO> forexRateMinDTOList) {
+        log.debug("send message to topic with the below forex information");
+        forexRateMinDTOList.stream().forEach(log::debug);
         try {
             topicSender.send(forexRateMinDTOList);
         } catch (Exception e) {
             log.error("Error while sending message to topic",e);
-            throw new RuntimeException(e);
+            exceptionHandler.handleException(e);
         }
-        forexRateMinDTOList.stream()
-                .forEach(log::info);
     }
 
     private static List<ForexRateMinDTO> convertToDTOList(List<Object> listOfForexData) {
